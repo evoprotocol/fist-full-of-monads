@@ -1,17 +1,29 @@
+
 # fist-full-of-monads
 
-The `Transaction` monad allows transaction-dependent computation to be composed without executing the transaction or specifying the Web3 Provider until later.
+![nodejs](https://github.com/evoprotocol/fist-full-of-monads/workflows/nodejs/badge.svg)
 
-The requirements for a transaction, particularly gas costs, can be checked in the client code rather than in a protocol library.
+
+## Abstract
+
+`fist-full-of-monads` module enables transaction-dependent computation to be composed without executing the transaction or specifying the Web3 Provider until later.
+
+The requirements for a transaction, particularly gas costs, can be checked in the client code rather than in a protocol library. This is used for benchmarking `yGwei`/`GasEVO`.
 
 ## Usage
 
-```
-// ES6
+> Support for multiple architectures 
+
+### using ES6
+
+```javascript
 import Transaction from 'fist-full-of-monads';
 import * as utils from 'fist-full-of-monads/lib/utils';
+```
 
-// ES5
+### using ES5
+
+```javascript
 var Transaction = require('fist-full-of-monads');
 var utils = require('fist-full-of-monads');
 
@@ -31,9 +43,10 @@ minedTx.transact(httpProvider)
   .then((receipt) => {
     ...
   })
+```
 
-// Protocol Libraries
-// ==================
+### as a library
+```javascript
 
 function transferTokens(sender, to, amount) {
   const web3 = new Web3();
@@ -51,6 +64,17 @@ const tx = transferTokens(
 
 const txhash = await tx.transact(provider);
 ```
+
+## Citation
+<pre>
+@incollection{evoprotocol,
+    title      = {fist-full-of-monadss},
+    year       = {2020},
+    booktitle  = {Transactional Benchmarking in Ethereum Virtual Machine},
+    series     = {EVO Protocol},
+    source      = {https://github.com/evoprotocol/fist-full-of-monads},
+}
+</pre>
 
 ## License
 
