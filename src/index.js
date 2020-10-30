@@ -2,8 +2,10 @@ import Promise from "bluebird";
 import t from "tcomb";
 import Web3 from "web3";
 
-/**
- * A transaction-dependent computation. Clients can compose operations on the
+/** 
+ * 
+ *@constant {Transaction} transaction-dependent 
+  Clients can compose operations on the
  * result of the transaction, but can always simulate the transaction to
  * check the gas costs or return value of the dependent transaction.
  *
@@ -12,26 +14,33 @@ import Web3 from "web3";
  */
 const Transaction = t.struct({
   options: t.Object,
-  expectedGas: t.maybe(t.Number),
-  // handleTransact is typically passed via compose unless the transaction
-  // logic itself is being overridden.
+/** 
+* Brief description of the function here.
+* @summary 
+* @param {handleTransact} maybe - typically passed via compose unless the transaction typically passed via compose unless the transaction
+* @return {expectedGas} logic itself is being overridden.
+*/expectedGas: t.maybe(t.Number),
+
   handleTransact: t.maybe(t.Function),
 });
 
 Object.assign(Transaction.prototype, {
   /**
-   * Performs the transaction-dependent computation defined in handleTransact. If
-   * handleTransact was not provided, the transaction is sent and its hash is
-   * returned in a Promise.
-   */
+* Brief description of the object here.
+* @property {handleTransact} Transaction  Performs the transaction-dependent computation defined in handleTransact. If
+* @property {handleTransact} [OptionalKeyHereIfAny] -handleTransact was not provided, the transaction is sent and its hash is
+* @property {handleTransact} provider.handleTransact -  returned in a Promise.
+*/
   async transact(provider, overrides = {}) {
     if (this.handleTransact != null) {
       return await this.handleTransact(provider, overrides);
     }
-
-    // Metamask estimates gas for transactions that don't specify it, but
-    // geth defaults to 90,000 gas. For consistency, we'll estimate the gas
-    // ourselves, using expectedGas if provided to skip eth_estimateGas.
+/** @constant {getQuickestGasEstimate} 
+ * Metamask estimates gas for transactions that don't specify it, but
+ * geth defaults to 90,000 gas. For consistency, we'll estimate the gas
+ * ourselves, using expectedGas if provided to skip eth_estimateGas.
+*/
+  
     let gas = this.options.gas || overrides.gas;
     if (gas == null) {
       gas = await this.getQuickestGasEstimate(provider);
@@ -42,7 +51,8 @@ Object.assign(Transaction.prototype, {
     return await sendTransaction({ ...this.options, ...(overrides || {}), gas });
   },
 
-  /**
+  /** 
+   * @constant {handleTransact} wrapped
    * Create a new Transaction that operates on this Transaction's result using
    * the provided function. Its transact() method will return a Promise that
    * resolves to the result of the provided function.
@@ -60,6 +70,11 @@ Object.assign(Transaction.prototype, {
     });
   },
 
+  /**
+   * 
+   * @param  {estimateGas} provider 
+   * @return promisify.web3
+   */
   estimateGas(provider) {
     const web3 = new Web3(provider);
     const web3EstimateGas = Promise.promisify(web3.eth.estimateGas);
@@ -67,8 +82,7 @@ Object.assign(Transaction.prototype, {
   },
 
   getQuickestGasEstimate(provider) {
-    // FIXME: expectedGas was probably unnecessary. this.options.gasLimit should
-    // do the trick.
+// @dev possibly uncessarry 
     if (this.expectedGas != null) {
       return Promise.resolve(this.expectedGas);
     }
